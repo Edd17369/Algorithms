@@ -37,7 +37,7 @@ def solve():
     search(state, solutions)
     return solutions
 
-#%% Combination sum
+#%% Combination sum :)
 
 
 candidates = [2,3,6,7]
@@ -82,7 +82,7 @@ def search(state, solutions, candidates, target):
 print(combinationSum(candidates, target))
 
 
-#%% Sudoku solver
+#%% Sudoku solver :|
 
 
 from itertools import product
@@ -143,9 +143,9 @@ search2(board)
 
 print(board)
 
-#%%
+#%% N-Queens 
 
- def solveNQueens(self, n: int) -> List[List[str]]:
+def solveNQueens(self, n: int) -> List[List[str]]:
         solutions = []
         state = []
         self.search(state, solutions, n)
@@ -185,7 +185,9 @@ def search(state, solutions, n):
 
 
 
-#%%
+#%% 24 Game X|
+
+
 import operator
 state = ''
 cards = [2,4,5,6]
@@ -207,7 +209,6 @@ def get_candidates(state, cards):
             
 
 def search(state, cards):
-    
     for candidate in get_candidates(state, cards):
         if not state:
             state = candidate
@@ -219,10 +220,10 @@ def search(state, cards):
             search(state, cards)
             state = old_state
             
-            
-    if is_valid_state(state):
+    if is_valid_state(state):  # si lo encuentra pero no lo devuelve
         print(state)
         return state
+
 
 def solve(cards):
     state = ''
@@ -238,9 +239,6 @@ word = "ABCCED"
 state = []
 
 
-def exist(board, word):
-    state = []
-    search(state)
 
 n = len(board)
 m = len(board[0])
@@ -251,32 +249,70 @@ def is_valid_state(board, state, word):
     return ''.join(word_state) == word
 
 def get_candidates(state, i, j):
-    neighbor = [(i-1,j), (i+1,j), (i,j-1), (i,j+1)]
-    candidates = []
-    for x in options:
-        if x not in state:
-            if  (0 <= x[0] < n and 0 <= x[1] < m):
-                candidates.append(x)
-    if not state:
-        return candidates
-    else:
-        for c in candidates:
-            if c[0] not in state[-1][0]
+    if len(state) >= len(word):
+        return []
+    neighbors = [(i-1,j), (i+1,j), (i,j-1), (i,j+1)]
+    candidates = [x for x in neighbors if -1 < x[0] < n and -1 < x[1] < m and x not in state]
+    return candidates
 
 
-def search(state):
+def search(state, solutions, row, col):
     if is_valid_state(board, state, word):
-        print('aqui')
-        solution = state.copy()
-        return solution
+        solutions.append(state.copy())
+        return 
 
-    for row in range(n):
-        for col in range(m):
-            if (row,col) not in state:
-                for candidate in get_candidates(state, row, col):
-                    state.append(candidate)
-                    search(state)
-                    state.pop()
-           
+
+    for x, y in get_candidates(state, row, col):
+        if board[x][y] in word:
+            state.append((x,y))
+            print(state)
+        search(state, solutions, x, y)
+        state.pop()
         
+def exist(board, word):
+    state = [(0,0)]
+    solutions = []
+    search(state, solutions, 0, 0)
+               
+
+#%%
+
+nums = [4,6,7,7]
+
+# No es correcto
+
+def search1(solutions, state, nums, indx):
+    if len(state) > 1:
+        solutions.append(state.copy())
+    
+    if not state:
+        state.append(nums[indx])
+
+    for i in range(indx+1, len(nums)):
+        if nums[i] >= nums[indx]:
+            state.append(nums[i])
+            search1(solutions, state, nums, i)
+    state.pop()
+    
+def solve1(nums):
+    state = []
+    solutions = []
+    search1(solutions, state, nums, 0)
+    return solutions
+    
+
+# :(
+
+
+result = set()
+    
+def dfs(nums, pre):
+    if nums:
+        for i in range(len(nums)):
+            if not pre or nums[i] >= pre[-1]:
+                if len(pre):
+                    result.add(tuple(pre + [nums[i]]))
+                dfs(nums[i + 1 : ], pre + [nums[i]])
+    return result
       
+dfs(nums, [])

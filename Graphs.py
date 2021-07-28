@@ -114,7 +114,7 @@ print(spiralNM(matrix))
 
 
 
-#%%
+#%% Islas
 
 """ Elimina las islas (vertices que no tienen un camino a la orilla) """
 
@@ -153,8 +153,8 @@ def iland(matrix):
             if matrix[i][j] == 1 and (i,j) not in visited:
                 copy[i][j] = 1
                 utilfcn(matrix, visited, copy, i, j, n, m)
-    for j in [0,m-1]:
-        for i in range(m):
+    for j in [0,m-1]: # No se yo si esto es necesario
+        for i in range(1,n-1):
             if matrix[i][j] == 1 and (i,j) not in visited:
                 copy[i][j] = 1
                 utilfcn(matrix, visited, copy, i, j, n, m)
