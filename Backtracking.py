@@ -125,7 +125,7 @@ def search2(board):
                     return True
                 else:
                     board[row][col] = '.'
-            return False # return False si no quedan candidatos
+            return False # return False si hay espacios en blanco y no quedan candidatos
     return True # Este entra cuando el tablero esta completo, es decir, se encontro una solucion
             
         
@@ -143,45 +143,60 @@ search2(board)
 
 print(board)
 
-#%% N-Queens 
+#%% N-Queens :(
 
-def solveNQueens(self, n: int) -> List[List[str]]:
+class Solution:
+    """
+    example on the left: [1, 3, 0, 2]
+    example on the right: [2, 0, 3, 1]
+    """
+    def solveNQueens(self, n) 
         solutions = []
         state = []
         self.search(state, solutions, n)
         return solutions
         
-def is_valid_state(self, state, n):
-    # check if it is a valid solution
-    return len(state) == n
+    def is_valid_state(self, state, n):
+        # check if it is a valid solution
+        return len(state) == n
 
-def get_candidates(self, state, n):
-    if not state:
-        return range(n)
+    def get_candidates(self, state, n):
+        if not state:
+            return range(n)
+        
+        # find the next position in the state to populate
+        position = len(state)
+        candidates = set(range(n))
+        # prune down candidates that place the queen into attacks
+        for row, col in enumerate(state):
+            # discard the column index if it's occupied by a queen
+            candidates.discard(col)
+            dist = position - row
+            # discard diagonals
+            candidates.discard(col + dist)
+            candidates.discard(col - dist)
+        return candidates
+
+    def search(self, state, solutions, n):
+        if self.is_valid_state(state, n):
+            state_string = self.state_to_string(state, n)
+            solutions.append(state_string)
+            return
+
+        for candidate in self.get_candidates(state, n):
+            # recurse
+            state.append(candidate)
+            self.search(state, solutions, n)
+            state.pop()
     
-    # find the next position in the state to populate
-    position = len(state)
-    candidates = set(range(n))
-    # prune down candidates that place the queen into attacks
-    for row, col in enumerate(state):
-        # discard the column index if it's occupied by a queen
-        candidates.discard(col)
-        dist = position - row
-        # discard diagonals
-        candidates.discard(col + dist)
-        candidates.discard(col - dist)
-    return candidates
-
-def search(state, solutions, n):
-    if self.is_valid_state(state, n):
-        solutions.append(state)
-        return
-
-    for candidate in self.get_candidates(state, n):
-        # recurse
-        state.append(candidate)
-        self.search(state, solutions, n)
-        state.pop()
+    def state_to_string(self, state, n):
+        # ex. [1, 3, 0, 2]
+        # output: [".Q..","...Q","Q...","..Q."]
+        ret = []
+        for i in state:
+            string = '.' * i + 'Q' + '.' * (n - i - 1)
+            ret.append(string)
+        return ret
 
 
 
@@ -232,7 +247,10 @@ def solve(cards):
     
 
 
-#%%
+#%% Word Search
+
+"Error: Maximum recursion"
+
 board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]]
 word = "ABCCED"
 
@@ -275,44 +293,34 @@ def exist(board, word):
     search(state, solutions, 0, 0)
                
 
-#%%
+#%% Increasing Subsequences :')
+
 
 nums = [4,6,7,7]
 
-# No es correcto
-
 def search1(solutions, state, nums, indx):
     if len(state) > 1:
-        solutions.append(state.copy())
+        # Los conjuntos y diccionarios no pueden almacenar listas pero 
+        # si pueden almacenar tuplas
+        solutions.add(tuple(state.copy())) 
     
-    if not state:
-        state.append(nums[indx])
 
     for i in range(indx+1, len(nums)):
-        if nums[i] >= nums[indx]:
+        # Esto es practico si no hay state, state[-1] no tira error
+        if not state or nums[i] >= state[-1]: 
             state.append(nums[i])
             search1(solutions, state, nums, i)
-    state.pop()
+    if state:
+        state.pop()
     
 def solve1(nums):
     state = []
-    solutions = []
-    search1(solutions, state, nums, 0)
+    solutions = set()
+    search1(solutions, state, nums, -1)
     return solutions
     
+"""
+Runtime: 232 ms, faster than 54.92% of Python3 online submissions for Increasing Subsequences.
+Memory Usage: 22.7 MB, less than 37.43% of Python3 online submissions for Increasing 
+"""
 
-# :(
-
-
-result = set()
-    
-def dfs(nums, pre):
-    if nums:
-        for i in range(len(nums)):
-            if not pre or nums[i] >= pre[-1]:
-                if len(pre):
-                    result.add(tuple(pre + [nums[i]]))
-                dfs(nums[i + 1 : ], pre + [nums[i]])
-    return result
-      
-dfs(nums, [])
